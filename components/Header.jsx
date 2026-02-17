@@ -96,21 +96,6 @@ export default function Header() {
                             </li>
                         );
                     })}
-
-                    <li>
-                        <Link
-                            href="/login"
-                            onClick={() => setOpen(false)}
-                            className="group relative mt-2 inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl py-3 font-semibold text-black bg-gradient-to-r from-[#2ef4ed] to-[#2fc8bf] shadow-[0_0_24px_rgba(46,244,237,.6)] transition-transform hover:scale-[1.03]"
-                        >
-                            <span className="absolute inset-0 bg-gradient-to-r from-[#2fc8bf] to-[#2ef4ed] origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover:scale-y-100" />
-
-                            <span className="absolute inset-0 rounded-xl blur-xl bg-[#2ef4ed] opacity-40 group-hover:opacity-70 transition-opacity duration-500" />
-
-                            <FiLogIn className="relative z-10 text-lg" />
-                            <span className="relative z-10">Iniciar Sesión</span>
-                        </Link>
-                    </li>
                 </ul>
             </div>
         </header>

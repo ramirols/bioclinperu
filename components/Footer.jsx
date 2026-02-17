@@ -15,7 +15,7 @@ export default function Footer() {
                         <Image src="/logo.png" alt="Logo" width={100} height={100} />
                     </h3>
                     <p className="text-sm tracking-wide text-gray-500">
-                        LABORATORIO CLÍNICO
+                        Bioclin Perú
                     </p>
                 </div>
 
@@ -25,10 +25,10 @@ export default function Footer() {
                         Navegación
                     </h4>
                     <ul className="space-y-2 text-sm">
-                        <li><Link href="/#inicio">Inicio</Link></li>
-                        <li><Link href="/#examenes">Examenes</Link></li>
-                        <li><Link href="/#ver-resultados">Ver Resultados</Link></li>
-                        <li><Link href="/#contacto">Contacto</Link></li>
+                        <li><Link href="/">Inicio</Link></li>
+                        <li><Link href="/examenes">Examenes</Link></li>
+                        <li><Link href="/ver-resultados">Ver Resultados</Link></li>
+                        <li><Link href="/contacto">Contacto</Link></li>
                     </ul>
                 </div>
 
@@ -46,7 +46,7 @@ export default function Footer() {
 
                         <div className="flex items-center gap-2">
                             <Mail className="w-4 h-4 text-teal-600" />
-                            <span>referencias@ccvlab.com</span>
+                            <span>referencias@bioclinperu.com</span>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ export default function Footer() {
             <div className="container mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
                 <Link href="#">Términos y condiciones</Link>
 
-                <span>© {new Date().getFullYear()} CCV LAB</span>
+                <span>© {new Date().getFullYear()} Bioclin Perú</span>
             </div>
         </footer>
     );
