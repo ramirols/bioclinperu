@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+    --color-primary: #1eaccc;
+    --color-secondary: #333333;
+    --color-accent: #74d1c6;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.swiper-pagination {
+    bottom: 20px !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.swiper-pagination-bullet {
+    width: 10px !important;
+    height: 10px !important;
+    margin: 0 6px !important;
+    background: white !important;
+    opacity: 0.2 !important;
+    transition: all 0.3s ease !important;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.swiper-pagination-bullet-active {
+    width: 30px !important;
+    border-radius: 5px !important;
+    background: var(--color-primary) !important;
+    opacity: 1 !important;
+}
+
+#testimonials .swiper-slide {
+    overflow: visible !important;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #111827 !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
