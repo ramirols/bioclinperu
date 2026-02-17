@@ -6,6 +6,57 @@ import toast from "react-hot-toast";
 import { supabase } from "@/lib/supabaseClient";
 import { FileText, Trash2, Pencil, Eye, EyeOff, Loader2 } from "lucide-react";
 
+function ExamTypeSelect({ examTypes, value, onChange, placeholder }) {
+    const [query, setQuery] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const filtered = examTypes.filter((type) =>
+        type.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const selected = examTypes.find((t) => t.id === value);
+
+    return (
+        <div className="relative">
+            <input
+                type="text"
+                value={open ? query : selected?.name || ""}
+                onChange={(e) => {
+                    setQuery(e.target.value);
+                    setOpen(true);
+                }}
+                onFocus={() => setOpen(true)}
+                placeholder={placeholder}
+                className="border rounded-lg border-gray-300 p-2 w-full outline-none"
+            />
+
+            {open && (
+                <div className="absolute z-50 bg-white border border-gray-300 w-full mt-1 rounded-lg max-h-60 overflow-y-auto shadow">
+                    {filtered.length > 0 ? (
+                        filtered.map((type) => (
+                            <div
+                                key={type.id}
+                                onClick={() => {
+                                    onChange(type.id);
+                                    setQuery("");
+                                    setOpen(false);
+                                }}
+                                className="p-2 hover:bg-indigo-100 cursor-pointer"
+                            >
+                                {type.name}
+                            </div>
+                        ))
+                    ) : (
+                        <p className="p-2 text-gray-500 text-sm">
+                            No se encontraron resultados
+                        </p>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
 export default function AdminDashboard({ handleLogout }) {
     const [examTypes, setExamTypes] = useState([]);
     const [results, setResults] = useState([]);
@@ -13,6 +64,7 @@ export default function AdminDashboard({ handleLogout }) {
     const [editingType, setEditingType] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
+    const [selectedExamType, setSelectedExamType] = useState(null);
 
     const {
         register,
@@ -143,7 +195,7 @@ export default function AdminDashboard({ handleLogout }) {
             // Crear resultado
             await supabase.from("exam_results").insert({
                 patient_id: data.user.id,
-                exam_type_id: formData.examType,
+                exam_type_id: selectedExamType,
                 exam_date: new Date(),
                 file_url: fileName,
             });
@@ -405,25 +457,6 @@ export default function AdminDashboard({ handleLogout }) {
                         )}
                     </div>
 
-                    <div>
-                        <input
-                            className="border rounded-lg border-gray-300 p-2 w-full focus:outline-none"
-                            placeholder="Email"
-                            {...register("email", {
-                                required: "El email es obligatorio",
-                                pattern: {
-                                    value: /^\S+@\S+$/i,
-                                    message: "Email inválido",
-                                },
-                            })}
-                        />
-                        {errors.email && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.email.message}
-                            </p>
-                        )}
-                    </div>
-
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -459,9 +492,7 @@ export default function AdminDashboard({ handleLogout }) {
                             required: "El rol es obligatorio",
                         })}
                     >
-                        <option value="">Seleccionar Rol</option>
                         <option value="user">Usuario</option>
-                        <option value="admin">Administrador</option>
                     </select>
 
                     {errors.role && (
@@ -471,35 +502,35 @@ export default function AdminDashboard({ handleLogout }) {
                     )}
 
                     <div>
-                        <select
-                            className="border rounded-lg border-gray-300 p-2 w-full focus:outline-none"
-                            {...register("examType", {
-                                required: "Selecciona un tipo de examen",
-                            })}
-                        >
-                            <option value="">Seleccionar Tipo</option>
-                            {examTypes.map((t) => (
-                                <option key={t.id} value={t.id}>
-                                    {t.name}
-                                </option>
-                            ))}
-                        </select>
+                        <ExamTypeSelect
+                            examTypes={examTypes}
+                            value={selectedExamType}
+                            onChange={(id) => setSelectedExamType(id)}
+                            placeholder="Buscar y seleccionar tipo de examen"
+                        />
 
-                        {errors.examType && (
+                        {!selectedExamType && (
                             <p className="text-red-500 text-sm mt-1">
-                                {errors.examType.message}
+                                Debes seleccionar un tipo de examen
                             </p>
                         )}
                     </div>
 
                     <div>
-                        <input
-                            type="file"
-                            accept="application/pdf"
-                            {...register("file", {
-                                required: "Debes subir un PDF",
-                            })}
-                        />
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Subir PDF
+                        </label>
+
+                        <label className="flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-indigo-700 transition">
+                            <FileText size={18} />
+                            Seleccionar archivo PDF
+                            <input
+                                type="file"
+                                accept="application/pdf"
+                                className="hidden"
+                                {...register("file", { required: "Debes subir un PDF" })}
+                            />
+                        </label>
 
                         {errors.file && (
                             <p className="text-red-500 text-sm mt-1">
@@ -601,7 +632,7 @@ export default function AdminDashboard({ handleLogout }) {
                         <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">Nombre</label>
                         <input
                             id="full_name"
-                            className="border p-2 w-full cursor-pointer border-gray-300 rounded outline-none"
+                            className="border p-2 w-full border-gray-300 rounded outline-none"
                             value={editingUser.profile.full_name}
                             placeholder="Cambiar nombre"
                             onChange={(e) =>
@@ -632,26 +663,20 @@ export default function AdminDashboard({ handleLogout }) {
 
                         {/* Tipo examen */}
                         <label htmlFor="exam_type_id" className="block text-sm font-medium text-gray-700">Tipo examen</label>
-                        <select
-                            id="exam_type_id"
-                            className="border p-2 w-full cursor-pointer border-gray-300 rounded outline-none"
-                            value={editingUser.result?.exam_type_id || ""}
-                            placeholder="Cambiar tipo examen"
-                            onChange={(e) =>
+                        <ExamTypeSelect
+                            examTypes={examTypes}
+                            value={editingUser.result?.exam_type_id}
+                            onChange={(id) =>
                                 setEditingUser({
                                     ...editingUser,
                                     result: {
                                         ...editingUser.result,
-                                        exam_type_id: e.target.value,
+                                        exam_type_id: id,
                                     },
                                 })
                             }
-                        >
-                            <option value="">Seleccionar tipo</option>
-                            {examTypes.map((t) => (
-                                <option key={t.id} value={t.id}>{t.name}</option>
-                            ))}
-                        </select>
+                            placeholder="Buscar y cambiar tipo de examen"
+                        />
 
                         {/* PDF */}
                         <label className="block text-sm font-medium text-gray-700">
@@ -710,19 +735,24 @@ export default function AdminDashboard({ handleLogout }) {
                             Subir nuevo PDF
                         </label>
 
-                        <input
-                            type="file"
-                            accept="application/pdf"
-                            onChange={(e) =>
-                                setEditingUser({
-                                    ...editingUser,
-                                    newFile: e.target.files[0],
-                                })
-                            }
-                        />
+                        <label className="flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-indigo-700 transition">
+                            <FileText size={18} />
+                            Seleccionar nuevo archivo
+                            <input
+                                type="file"
+                                accept="application/pdf"
+                                className="hidden"
+                                onChange={(e) =>
+                                    setEditingUser({
+                                        ...editingUser,
+                                        newFile: e.target.files[0],
+                                    })
+                                }
+                            />
+                        </label>
 
                         <button
-                            disabled={!editingUser.result?.exam_type_id}
+                            disabled={!editingUser.result?.exam_type_id || !editingUser.newFile}
                             className="bg-primary hover:bg-primary/80 cursor-pointer text-white w-full py-2 rounded disabled:opacity-50"
                             onClick={saveUserChanges}
                         >

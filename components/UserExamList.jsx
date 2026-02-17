@@ -14,24 +14,32 @@ export default function UserExamList() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
 
-            setUserInfo(user);
+            // 🔥 Traer perfil real
+            const { data: profile } = await supabase
+                .from("profiles")
+                .select("full_name")
+                .eq("id", user.id)
+                .single();
+
+            setUserInfo(profile);
 
             const { data } = await supabase
                 .from("exam_results")
                 .select(`
-                    id,
-                    exam_date,
-                    file_url,
-                    exam_types!exam_results_exam_type_id_fkey(name),
-                    profiles!exam_results_patient_id_fkey (
-                        full_name
-                    )
-                `)
+      id,
+      exam_date,
+      file_url,
+      exam_types ( name )
+    `)
                 .eq("patient_id", user.id)
                 .order("exam_date", { ascending: false });
 
             setExams(data || []);
             setLoading(false);
+
+            console.log(profile);
+            console.log(user);
+            console.log(data);
         };
 
         load();
@@ -56,14 +64,9 @@ export default function UserExamList() {
                         </div>
 
                         <div>
-                            <h1 className="text-xl font-semibold text-gray-800">
-                                Bienvenido{exams?.[0]?.profiles?.full_name
-                                    ? `, ${exams[0].profiles.full_name}`
-                                    : ""}
-                            </h1>
-                            <p className="text-sm text-gray-500">
-                                {userInfo?.email}
-                            </p>
+                            <h3>
+                                Bienvenido{userInfo?.full_name ? `, ${userInfo.full_name}` : "Usuario"}
+                            </h3>
                         </div>
                     </div>
 
@@ -81,7 +84,7 @@ export default function UserExamList() {
 
                 {/* ===== TITLE ===== */}
                 <div>
-                    <h2 className="text-lg font-semibold text-gray-700">
+                    <h2 className="text-xl font-semibold text-gray-700">
                         Mis Exámenes
                     </h2>
                     <p className="text-sm text-gray-500">
@@ -109,25 +112,45 @@ export default function UserExamList() {
                             <div className="space-y-2">
                                 {/* Badge */}
                                 {exam.exam_types?.name && (
-                                    <span className="inline-block bg-indigo-100 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        {exam.exam_types.name}
-                                    </span>
+                                    <p>
+                                        Tipo de examen: <span className="inline-block bg-indigo-100 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full">
+                                            {exam.exam_types.name}
+                                        </span>
+                                    </p>
                                 )}
 
-                                <div className="flex items-center gap-2 text-sm text-gray-500">
-                                    <Calendar size={14} />
-                                    {new Date(exam.exam_date).toLocaleDateString()}
+                                <div className="flex items-center gap-2 text-xs text-gray-500">
+                                    Fecha de registro del examen:
+                                    <Calendar size={14} className="text-indigo-600" />
+                                    {new Date(exam.exam_date).toLocaleDateString("es-PE")}
                                 </div>
                             </div>
 
-                            <a
-                                href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/resultados/${exam.file_url}`}
-                                target="_blank"
-                                className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition"
-                            >
-                                <FileText size={18} />
-                                Ver PDF
-                            </a>
+                            {exam.file_url ? (
+                                <button
+                                    onClick={async () => {
+                                        const { data } = supabase.storage
+                                            .from("resultados")
+                                            .getPublicUrl(exam.file_url);
+
+                                        const link = document.createElement("a");
+                                        link.href = data.publicUrl;
+                                        link.setAttribute("download", exam.file_url);
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }}
+                                    className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition cursor-pointer"
+                                >
+                                    <FileText size={18} />
+                                    Descargar PDF
+                                </button>
+                            ) : (
+                                <span className="text-sm text-gray-400 italic">
+                                    Resultado aún no disponible
+                                </span>
+                            )}
+
                         </div>
                     ))}
                 </div>
