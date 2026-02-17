@@ -9,7 +9,7 @@ export default function ContactoHero() {
             <div className="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
 
                 {/* Imagen */}
-                <div className="relative w-full h-[480px] rounded-2xl overflow-hidden">
+                <div className="relative w-full h-[280px] md:h-[480px] rounded-2xl overflow-hidden">
                     <Image
                         src="/images/hero-1.jpg"
                         alt="Atención médica a domicilio"

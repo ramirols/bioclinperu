@@ -6,6 +6,8 @@ import AdminDashboard from "@/components/AdminDashboard";
 import UserExamList from "@/components/UserExamList";
 import { useRouter } from "next/navigation";
 
+import { Loader2 } from "lucide-react";
+
 export default function Dashboard() {
     const router = useRouter();
     const [role, setRole] = useState(null);
@@ -36,7 +38,12 @@ export default function Dashboard() {
         getProfile();
     }, [router]);
 
-    if (!role) return <p>Cargando...</p>;
+    if (!role) return (
+        <div className="flex items-center justify-center h-screen space-x-2">
+            <Loader2 className="animate-spin text-indigo-600" size={24} />
+            <p className="text-xl font-bold text-indigo-600">Cargando...</p>
+        </div>
+    );
 
     return role === "admin"
         ? <AdminDashboard handleLogout={handleLogout} />

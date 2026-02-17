@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { FileText, Calendar, LogOut, User } from "lucide-react";
+import { FileText, Calendar, LogOut, User, Loader2 } from "lucide-react";
 
 export default function UserExamList() {
     const [exams, setExams] = useState([]);
     const [userInfo, setUserInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const load = async () => {
@@ -30,10 +31,18 @@ export default function UserExamList() {
                 .order("exam_date", { ascending: false });
 
             setExams(data || []);
+            setLoading(false);
         };
 
         load();
     }, []);
+
+    if (loading) return (
+        <div className="flex items-center justify-center h-screen space-x-2">
+            <Loader2 className="animate-spin text-indigo-600" size={24} />
+            <p className="text-xl font-bold text-indigo-600">Cargando datos...</p>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-gray-50">

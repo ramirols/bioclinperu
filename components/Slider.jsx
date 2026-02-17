@@ -44,7 +44,7 @@ export default function Slider() {
                     pauseOnMouseEnter: true,
                 }}
                 pagination={{ clickable: true }}
-                className="h-[520px] md:h-[750px]"
+                className="h-[220px] md:h-[750px]"
             >
                 {slides.map((slide, index) => (
                     <SwiperSlide key={index}>

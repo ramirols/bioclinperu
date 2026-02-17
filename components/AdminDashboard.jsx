@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { supabase } from "@/lib/supabaseClient";
-import { FileText, Trash2, Pencil, Eye, EyeOff } from "lucide-react";
+import { FileText, Trash2, Pencil, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function AdminDashboard({ handleLogout }) {
     const [examTypes, setExamTypes] = useState([]);
@@ -235,7 +235,55 @@ export default function AdminDashboard({ handleLogout }) {
         }
     };
 
-    if (loading) return <p>Cargando...</p>;
+    // ================= ELIMINAR USUARIO =================
+    const deleteUser = async (userId) => {
+        try {
+            // 1️⃣ Obtener resultado si existe
+            const { data: result } = await supabase
+                .from("exam_results")
+                .select("*")
+                .eq("patient_id", userId)
+                .single();
+
+            // 2️⃣ Eliminar archivo si existe
+            if (result?.file_url) {
+                await supabase.storage
+                    .from("resultados")
+                    .remove([result.file_url]);
+            }
+
+            // 3️⃣ Eliminar resultado
+            await supabase
+                .from("exam_results")
+                .delete()
+                .eq("patient_id", userId);
+
+            // 4️⃣ Eliminar profile
+            await supabase
+                .from("profiles")
+                .delete()
+                .eq("id", userId);
+
+            // 5️⃣ Llamar API para eliminar auth user
+            await fetch("/api/delete-user", {
+                method: "POST",
+                body: JSON.stringify({ userId }),
+            });
+
+            toast.success("Usuario eliminado correctamente");
+            fetchData();
+        } catch (error) {
+            console.error(error);
+            toast.error("Error eliminando usuario");
+        }
+    };
+
+    if (loading) return (
+        <div className="flex items-center justify-center h-screen space-x-2">
+            <Loader2 className="animate-spin text-indigo-600" size={24} />
+            <p className="text-xl font-bold text-indigo-600">Cargando datos...</p>
+        </div>
+    );
 
     return (
         <div className="container mx-auto p-10 space-y-10">
@@ -495,13 +543,18 @@ export default function AdminDashboard({ handleLogout }) {
                         <div className="flex gap-4 items-center">
                             {/* VER PDF (si existe) */}
                             {item.result && (
-                                <a
-                                    href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/resultados/${item.result.file_url}`}
-                                    target="_blank"
-                                    className="cursor-pointer"
+                                <button
+                                    onClick={() =>
+                                        window.open(
+                                            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/resultados/${item.result.file_url}`,
+                                            "_blank"
+                                        )
+                                    }
+                                    className="cursor-pointer bg-primary text-white px-4 py-1 rounded flex items-center gap-2"
                                 >
                                     <FileText size={18} />
-                                </a>
+                                    Ver PDF
+                                </button>
                             )}
 
                             {/* EDITAR (SIEMPRE DISPONIBLE) */}
@@ -512,10 +565,11 @@ export default function AdminDashboard({ handleLogout }) {
                                         result: item.result ?? null,
                                     })
                                 }
-                                className="text-yellow-600 cursor-pointer"
+                                className="text-yellow-600 bg-yellow-100 cursor-pointer px-4 py-1 rounded flex items-center gap-2"
                                 title="Editar usuario"
                             >
                                 <Pencil size={18} />
+                                Editar
                             </button>
 
                             {/* ELIMINAR USUARIO (solo si existe) */}
@@ -524,10 +578,11 @@ export default function AdminDashboard({ handleLogout }) {
                                     onClick={() =>
                                         deleteUser(item.profile.id)
                                     }
-                                    className="text-red-600 cursor-pointer"
+                                    className="text-red-600 bg-red-100 cursor-pointer px-4 py-1 rounded flex items-center gap-2"
                                     title="Eliminar usuario"
                                 >
                                     <Trash2 size={18} />
+                                    Eliminar
                                 </button>
                             )}
                         </div>
@@ -543,9 +598,12 @@ export default function AdminDashboard({ handleLogout }) {
                         <h3 className="font-bold text-lg">Editar usuario</h3>
 
                         {/* Nombre */}
+                        <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">Nombre</label>
                         <input
-                            className="border p-2 w-full cursor-pointer border-gray-300 rounded"
+                            id="full_name"
+                            className="border p-2 w-full cursor-pointer border-gray-300 rounded outline-none"
                             value={editingUser.profile.full_name}
+                            placeholder="Cambiar nombre"
                             onChange={(e) =>
                                 setEditingUser({
                                     ...editingUser,
@@ -555,9 +613,12 @@ export default function AdminDashboard({ handleLogout }) {
                         />
 
                         {/* Rol */}
+                        <label htmlFor="role" className="block text-sm font-medium text-gray-700">Rol</label>
                         <select
-                            className="border p-2 w-full cursor-pointer border-gray-300 rounded"
+                            id="role"
+                            className="border p-2 w-full cursor-pointer border-gray-300 rounded outline-none"
                             value={editingUser.profile.role}
+                            placeholder="Cambiar rol"
                             onChange={(e) =>
                                 setEditingUser({
                                     ...editingUser,
@@ -570,9 +631,12 @@ export default function AdminDashboard({ handleLogout }) {
                         </select>
 
                         {/* Tipo examen */}
+                        <label htmlFor="exam_type_id" className="block text-sm font-medium text-gray-700">Tipo examen</label>
                         <select
-                            className="border p-2 w-full cursor-pointer border-gray-300 rounded"
+                            id="exam_type_id"
+                            className="border p-2 w-full cursor-pointer border-gray-300 rounded outline-none"
                             value={editingUser.result?.exam_type_id || ""}
+                            placeholder="Cambiar tipo examen"
                             onChange={(e) =>
                                 setEditingUser({
                                     ...editingUser,
@@ -590,6 +654,62 @@ export default function AdminDashboard({ handleLogout }) {
                         </select>
 
                         {/* PDF */}
+                        <label className="block text-sm font-medium text-gray-700">
+                            Documento actual
+                        </label>
+
+                        {editingUser.result?.file_url ? (
+                            <div className="flex items-center justify-between bg-gray-100 p-2 rounded">
+                                <button
+                                    onClick={() =>
+                                        window.open(
+                                            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/resultados/${editingUser.result.file_url}`,
+                                            "_blank"
+                                        )
+                                    }
+                                    className="text-blue-600 text-sm underline"
+                                >
+                                    Ver PDF actual
+                                </button>
+
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            await supabase.storage
+                                                .from("resultados")
+                                                .remove([editingUser.result.file_url]);
+
+                                            await supabase
+                                                .from("exam_results")
+                                                .update({ file_url: null })
+                                                .eq("id", editingUser.result.id);
+
+                                            setEditingUser({
+                                                ...editingUser,
+                                                result: {
+                                                    ...editingUser.result,
+                                                    file_url: null,
+                                                },
+                                            });
+
+                                            toast.success("PDF eliminado");
+                                        } catch {
+                                            toast.error("Error eliminando PDF");
+                                        }
+                                    }}
+                                    className="text-red-600 text-sm"
+                                >
+                                    Eliminar PDF
+                                </button>
+                            </div>
+                        ) : (
+                            <p className="text-sm text-red-500">No hay documento subido</p>
+                        )}
+
+                        <label className="block text-sm font-medium text-gray-700 mt-3">
+                            Subir nuevo PDF
+                        </label>
+
                         <input
                             type="file"
                             accept="application/pdf"
