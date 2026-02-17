@@ -566,7 +566,7 @@ export default function AdminDashboard({ handleLogout }) {
                         className="border rounded-lg border-gray-300 p-4 flex justify-between items-center"
                     >
                         <div>
-                            <p className="font-semibold">{item.profile.full_name}</p>
+                            <p className="font-semibold">{item.profile.username}</p>
 
                             {item.result ? (
                                 <p className="text-sm text-gray-500">
@@ -621,7 +621,7 @@ export default function AdminDashboard({ handleLogout }) {
                                     title="Eliminar usuario"
                                 >
                                     <Trash2 size={18} />
-                                    Eliminar
+                                    Eliminar usuario
                                 </button>
                             )}
                         </div>
@@ -700,7 +700,7 @@ export default function AdminDashboard({ handleLogout }) {
                                             "_blank"
                                         )
                                     }
-                                    className="text-blue-600 text-sm underline"
+                                    className="text-blue-600 text-sm underline cursor-pointer"
                                 >
                                     Ver PDF actual
                                 </button>
@@ -730,7 +730,7 @@ export default function AdminDashboard({ handleLogout }) {
                                             toast.error("Error eliminando PDF");
                                         }
                                     }}
-                                    className="text-red-600 text-sm"
+                                    className="text-red-600 text-sm cursor-pointer"
                                 >
                                     Eliminar PDF
                                 </button>
