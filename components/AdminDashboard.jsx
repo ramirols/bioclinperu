@@ -168,20 +168,31 @@ export default function AdminDashboard({ handleLogout }) {
                 return;
             }
 
-            // Crear usuario
-            const { data, error } = await supabase.auth.signUp({
-                email: formData.email,
-                password: formData.password,
+            if (!selectedExamType) {
+                toast.error("Debes seleccionar un tipo de examen");
+                return;
+            }
+
+            const normalizedUsername = formData.username.trim().toLowerCase();
+
+            // Crear usuario (backend)
+            const response = await fetch("/api/create-user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: normalizedUsername,
+                    password: formData.password,
+                    full_name: formData.name,
+                    role: formData.role,
+                }),
             });
 
-            if (error) throw error;
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error creando usuario");
+            }
 
-            // Insert profile
-            await supabase.from("profiles").insert({
-                id: data.user.id,
-                full_name: formData.name,
-                role: formData.role,
-            });
+            const { userId } = await response.json();
 
             // Subir PDF
             const fileName = `${Date.now()}-${formData.file[0].name}`;
@@ -194,7 +205,7 @@ export default function AdminDashboard({ handleLogout }) {
 
             // Crear resultado
             await supabase.from("exam_results").insert({
-                patient_id: data.user.id,
+                patient_id: userId,
                 exam_type_id: selectedExamType,
                 exam_date: new Date(),
                 file_url: fileName,
@@ -441,18 +452,15 @@ export default function AdminDashboard({ handleLogout }) {
                     <div>
                         <input
                             className="border rounded-lg border-gray-300 p-2 w-full focus:outline-none"
-                            placeholder="Nombre"
-                            {...register("name", {
-                                required: "El nombre es obligatorio",
-                                minLength: {
-                                    value: 3,
-                                    message: "Mínimo 3 caracteres",
-                                },
+                            placeholder="Usuario"
+                            {...register("username", {
+                                required: "El usuario es obligatorio",
                             })}
                         />
-                        {errors.name && (
+
+                        {errors.username && (
                             <p className="text-red-500 text-sm mt-1">
-                                {errors.name.message}
+                                {errors.username.message}
                             </p>
                         )}
                     </div>

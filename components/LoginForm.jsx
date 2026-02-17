@@ -15,8 +15,11 @@ export default function LoginForm() {
     } = useForm();
 
     const onSubmit = async (data) => {
+        const normalizedUsername = data.username.trim().toLowerCase();
+        const fakeEmail = `${normalizedUsername}@clinica.com`;
+
         const { error } = await supabase.auth.signInWithPassword({
-            email: data.email,
+            email: fakeEmail,
             password: data.password,
         });
 
@@ -51,24 +54,21 @@ export default function LoginForm() {
                     {/* Email */}
                     <div>
                         <input
-                            type="email"
-                            placeholder="Correo electrónico"
+                            type="text"
+                            placeholder="Usuario"
                             className={`w-full border rounded-lg px-4 py-3 focus:outline-none
-                                ${errors.email
+                                ${errors.username
                                     ? "border-red-500 focus:ring-red-500"
                                     : "border-gray-300 focus:ring-primary"
                                 }`}
-                            {...register("email", {
-                                required: "El correo es obligatorio",
-                                pattern: {
-                                    value: /^\S+@\S+$/i,
-                                    message: "Correo inválido",
-                                },
+                            {...register("username", {
+                                required: "El usuario es obligatorio",
                             })}
                         />
-                        {errors.email && (
+
+                        {errors.username && (
                             <p className="text-sm text-red-500 mt-1">
-                                {errors.email.message}
+                                {errors.username.message}
                             </p>
                         )}
                     </div>
