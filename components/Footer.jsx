@@ -58,7 +58,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm">
                             <li>
                                 <Link
-                                    href="tel:+51982690461"
+                                    href="tel:+51999999999"
                                     className="group inline-flex items-center gap-3 transition-all duration-300 hover:text-teal-600"
                                 >
                                     <Phone className="w-4 h-4 text-teal-600" />
