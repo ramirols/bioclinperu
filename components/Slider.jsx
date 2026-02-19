@@ -11,7 +11,7 @@ import "swiper/css/effect-fade";
 const slides = [
     {
         description: "Imagen de persona sosteniendo sus manos en el pecho dando información de tomar pruebas a domicilio",
-        image: "/images/hero-1.jpg",
+        image: "/images/hero1.jpg",
         cta: "/ciclos",
     },
     {
