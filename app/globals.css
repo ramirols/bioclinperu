@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html,
+body {
+    scroll-behavior: smooth;
+}
+
 @theme {
     --color-primary: #1eaccc;
     --color-secondary: #333333;
@@ -15,7 +20,7 @@
     height: 10px !important;
     margin: 0 6px !important;
     background: white !important;
-    opacity: 0.2 !important;
+    opacity: 0.1 !important;
     transition: all 0.3s ease !important;
 }
 

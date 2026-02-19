@@ -9,7 +9,7 @@ export default function QuienesSomos() {
 
                 <div className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                        src="/images/quienes-somos.jpg"
+                        src="/images/about-us.jpg"
                         alt="Equipo profesional BIOCLIN"
                         fill
                         className="object-cover"

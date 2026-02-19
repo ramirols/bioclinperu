@@ -28,7 +28,7 @@ export default function Header() {
                         className="object-contain transition duration-500 group-hover:rotate-12 group-hover:scale-110"
                     /> */}
 
-                    <h1 className="text-2xl font-bold">Bioclin Perú</h1>
+                    <h1 className="text-2xl font-bold text-primary">Bioclin Perú</h1>
                 </Link>
 
                 <ul className="hidden md:flex items-center gap-7">

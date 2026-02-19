@@ -14,9 +14,13 @@ export default function Footer() {
 
                     {/* Logo */}
                     <div className="flex flex-col items-center sm:items-start">
-                        <Image src="/logo.png" alt="Logo" width={100} height={100} />
-                        <p className="mt-4 text-sm tracking-wide text-gray-500">
+                        {/* <Image src="/logo.png" alt="Logo" width={100} height={100} /> */}
+                        <h2 className="text-2xl font-bold text-primary">
                             Bioclin Perú
+                        </h2>
+
+                        <p className="mt-4 text-sm tracking-wide text-gray-500">
+                            "Compromiso con tu salud"
                         </p>
                     </div>
 
@@ -58,7 +62,7 @@ export default function Footer() {
                                     className="group inline-flex items-center gap-3 transition-all duration-300 hover:text-teal-600"
                                 >
                                     <Phone className="w-4 h-4 text-teal-600" />
-                                    <span>+51 982 690 461</span>
+                                    <span>+51 999 999 999</span>
                                     <ArrowUpRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                                 </Link>
                             </li>

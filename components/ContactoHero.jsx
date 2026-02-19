@@ -11,7 +11,7 @@ export default function ContactoHero() {
                 {/* Imagen */}
                 <div className="relative w-full h-[280px] md:h-[480px] rounded-2xl overflow-hidden">
                     <Image
-                        src="/images/hero-1.jpg"
+                        src="/images/contacto.png"
                         alt="Atención médica a domicilio"
                         fill
                         className="object-cover"
