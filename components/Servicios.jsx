@@ -12,7 +12,7 @@ import {
 const categorias = [
     {
         id: "domicilio",
-        label: "Toma a Domicilio",
+        label: "Toma de muestra a Domicilio",
         icon: Home,
     },
     {
@@ -29,17 +29,14 @@ const categorias = [
 
 const contenido = {
     domicilio: [
-        "Toma de muestras pediátricas y adultos",
+        "Toma de muestras pediátricas, adultas y oncológicas",
         "Pacientes oncológicos y adultos mayores",
-        "Sangre venosa, arterial y capilar",
         "Recolección de orina y heces",
         "Muestras especiales",
     ],
     empresas: [
         "Exámenes ocupacionales",
         "Campañas preventivas",
-        "Perfiles bioquímicos y hematológicos",
-        "Perfiles hormonales y tumorales",
         "Evaluaciones periódicas empresariales",
     ],
     gestion: [

@@ -23,7 +23,7 @@ export default function ComoFunciona() {
             step: "03",
             title: "Procesamiento y resultados",
             description:
-                "Entregamos al laboratorio de referencia y recibes tus resultados online.",
+                "Se transporta las muestras al Laboratorio especializado para su proceso y recibes los resultados vía online.",
         },
     ];
 
