@@ -18,7 +18,7 @@ export default function WhatsAppWidget() {
 
     return (
         <motion.div
-            className="fixed bottom-10 sm:bottom-10 right-4 sm:right-10 z-50 flex items-center gap-2 sm:gap-4"
+            className="fixed bottom-10 sm:bottom-15 right-4 sm:right-10 z-50 flex items-center gap-2 sm:gap-4"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}

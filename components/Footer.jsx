@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function Footer() {
     return (
         <footer className="bg-white text-gray-600 border-t border-gray-200 rounded-t-3xl">
-            <div className="container mx-auto px-6 py-12">
+            <div className="container mx-auto px-6 py-10">
 
                 {/* Grid principal */}
                 <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-4 text-center sm:text-left">
@@ -19,9 +19,12 @@ export default function Footer() {
                             Bioclin Perú
                         </h2>
 
-                        <p className="mt-4 text-sm tracking-wide text-gray-500">
-                            "Compromiso con tu salud"
-                        </p>
+                        <div className="flex flex-col gap-2">
+                            <p className="mt-4 text-sm tracking-wide text-gray-500">
+                                "Compromiso con tu salud"
+                            </p>
+                            <p className="mt-4 text-sm tracking-wide text-gray-500 rounded-xl">Trabajando con <a href="https://www.laboratorioclinicoems.com/" target="_blank" className="font-bold text-white bg-[#28abe3] rounded-xl px-2">EMS</a> </p>
+                        </div>
                     </div>
 
                     {/* Navegación */}
@@ -106,7 +109,7 @@ export default function Footer() {
                 <div className="mt-8 border-t border-gray-200 w-full mx-auto" />
 
                 {/* Bottom */}
-                <div className="mt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
+                <div className="mt-10 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
                     <p
                         className="hover:text-teal-600 transition-colors duration-300"
                     >

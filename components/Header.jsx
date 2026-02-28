@@ -8,6 +8,8 @@ import { useState } from "react";
 
 const links = [
     { label: "Inicio", href: "/" },
+    { label: "Servicios", href: "/servicios" },
+    { label: "Equipos de laboratorio clínico", href: "/equipos-de-laboratorio-clinico" },
     { label: "Ver resultados", href: "/ver-resultados" },
     { label: "Contacto", href: "/contacto" },
 ];

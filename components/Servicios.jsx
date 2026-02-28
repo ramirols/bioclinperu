@@ -29,9 +29,8 @@ const categorias = [
 
 const contenido = {
     domicilio: [
-        "Toma de muestras pediátricas, adultas y oncológicas",
+        "Toma de muestras en pacientes pediátricos, adultos, adultos mayores y oncológicos",
         "Pacientes oncológicos y adultos mayores",
-        "Recolección de orina y heces",
         "Muestras especiales",
     ],
     empresas: [
