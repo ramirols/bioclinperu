@@ -36,6 +36,8 @@ export default function Footer() {
                             {[
                                 { name: "Inicio", href: "/" },
                                 { name: "Exámenes", href: "/examenes" },
+                                { label: "Servicios", href: "/servicios" },
+                                { label: "Equipos de laboratorio clínico", href: "/equipos-de-laboratorio-clinico" },
                                 { name: "Ver Resultados", href: "/ver-resultados" },
                                 { name: "Contacto", href: "/contacto" },
                             ].map((item) => (
